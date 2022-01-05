@@ -7,6 +7,9 @@
 #include "util.hpp"
 #include <chrono>
 
+#include "memory.hpp"
+#include "offsets.hpp"
+
 BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
 {
   using namespace Wine;
@@ -23,10 +26,16 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
           g_GameVariables = std::make_unique<GameVariables>();
           g_Logger->Info("Loaded game variables for GTAV %s", g_GameVariables->m_GameBuild);
 
-          int counter = 0;
-          while(g_Running)
+          while (*g_GameVariables->m_GameState != 0)
           {
-            if(IsKeyPressed(VK_DELETE))
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+            std::this_thread::yield();
+          }
+          g_Logger->Info("Loaded GTA");
+
+          while (g_Running)
+          {
+            if (IsKeyPressed(VK_DELETE))
               g_Running = false;
             std::this_thread::sleep_for(std::chrono::milliseconds(3));
             std::this_thread::yield();
