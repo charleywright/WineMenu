@@ -19,7 +19,7 @@ namespace Wine
 
 		if (!AttachConsole(GetCurrentProcessId()))
 			AllocConsole();
-		SetConsoleTitleW(L"WineMenu - GTAV 1.58");
+		SetConsoleTitleW(L"WineMenu");
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN);
 		SetConsoleCP(CP_UTF8);
 		SetConsoleOutputCP(CP_UTF8);
@@ -52,6 +52,11 @@ namespace Wine
 		va_end(args);
 
 		g_Running = false;
+	}
+
+	void Logger::SetTitle(const char* title)
+	{
+		SetConsoleTitleA(title);
 	}
 
 	void Logger::Log(const char* type, const char* format, std::va_list args)

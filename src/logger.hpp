@@ -40,6 +40,12 @@ namespace Wine
 		void Error(const char* format, ...);
 
 		/**
+		 * \brief Sets the title of the console
+		 * \param title The new title for the console
+		 */
+		void SetTitle(const char* title);
+
+		/**
 		 * \brief Logs a message
 		 * \param type The type of the logged text, visual only
 		 * \param format The format of the logged text

@@ -9,6 +9,7 @@
 
 #include "memory.hpp"
 #include "offsets.hpp"
+#include "scriptglobal.hpp"
 
 BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
 {
@@ -24,12 +25,16 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
           g_Logger->Info("WineMenu injected.");
 
           g_GameVariables = std::make_unique<GameVariables>();
-          g_Logger->Info("Loaded game variables for GTAV %s", g_GameVariables->m_GameBuild);
+          g_GameFunctions = std::make_unique<GameFunctions>();
+          std::string title = "WineMenu - GTA ";
+          title.append(g_GameVariables->m_GameBuild);
+          g_Logger->SetTitle(title.c_str());
 
           while (*g_GameVariables->m_GameState != 0)
           {
             std::this_thread::sleep_for(std::chrono::seconds(2));
             std::this_thread::yield();
+
           }
           g_Logger->Info("Loaded GTA");
 
@@ -40,6 +45,9 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
             std::this_thread::sleep_for(std::chrono::milliseconds(3));
             std::this_thread::yield();
           }
+
+          g_GameVariables.reset();
+          g_GameFunctions.reset();
 
           g_Logger->Info("WineMenu unloaded");
           g_Logger.reset();
