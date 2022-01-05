@@ -28,6 +28,7 @@ namespace Wine
 		m_Console.open("CONOUT$");
 		m_Input.open("CONIN$");
 		// m_File.open(m_FilePath, std::ios_base::out | std::ios_base::app);
+		Logo();
 	}
 
 	Logger::~Logger() noexcept
@@ -74,31 +75,31 @@ namespace Wine
 
 		m_Messages.push_back(std::move(messageBuffer));
 	}
-	//
-	// void Logger::Logo()
-	// {
-	// 	m_Console << "##   ##    ##                       ##   ##\n";
-	// 	m_Console << "##   ##                             ### ###\n";
-	// 	m_Console << "##   ##   ###     #####     ####    #######   ####    #####    ##  ##\n";
-	// 	m_Console << "## # ##    ##     ##  ##   ##  ##   #######  ##  ##   ##  ##   ##  ##\n";
-	// 	m_Console << "#######    ##     ##  ##   ######   ## # ##  ######   ##  ##   ##  ##\n";
-	// 	m_Console << "### ###    ##     ##  ##   ##       ##   ##  ##       ##  ##   ##  ##\n";
-	// 	m_Console << "##   ##   ####    ##  ##    #####   ##   ##   #####   ##  ##   ######\n";
-	// 	m_Console.flush();
-	// }
-	//
-	// std::mutex& Logger::GetMutex()
-	// {
-	// 	return m_Mutex;
-	// }
-	//
-	// std::pair<std::unique_ptr<char[]>*, std::size_t> Logger::GetMessages()
-	// {
-	// 	return std::make_pair(m_Messages.data(), m_Messages.size());
-	// }
-	//
-	// std::istream& Logger::GetInput()
-	// {
-	// 	return m_Input;
-	// }
+
+	void Logger::Logo()
+	{
+		m_Console << "##   ##    ##                       ##   ##\n";
+		m_Console << "##   ##                             ### ###\n";
+		m_Console << "##   ##   ###     #####     ####    #######   ####    #####    ##  ##\n";
+		m_Console << "## # ##    ##     ##  ##   ##  ##   #######  ##  ##   ##  ##   ##  ##\n";
+		m_Console << "#######    ##     ##  ##   ######   ## # ##  ######   ##  ##   ##  ##\n";
+		m_Console << "### ###    ##     ##  ##   ##       ##   ##  ##       ##  ##   ##  ##\n";
+		m_Console << "##   ##   ####    ##  ##    #####   ##   ##   #####   ##  ##   ######\n\n";
+		m_Console.flush();
+	}
+
+	std::mutex& Logger::GetMutex()
+	{
+		return m_Mutex;
+	}
+
+	std::pair<std::unique_ptr<char[]>*, std::size_t> Logger::GetMessages()
+	{
+		return std::make_pair(m_Messages.data(), m_Messages.size());
+	}
+
+	std::istream& Logger::GetInput()
+	{
+		return m_Input;
+	}
 }
