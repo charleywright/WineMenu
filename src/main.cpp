@@ -21,7 +21,7 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
           g_Logger->Info("WineMenu injected.");
 
           g_GameVariables = std::make_unique<GameVariables>();
-          g_Logger->Info("Loaded game variables");
+          g_Logger->Info("Loaded game variables for GTAV %s", g_GameVariables->m_GameBuild);
 
           int counter = 0;
           while(g_Running)
