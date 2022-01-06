@@ -7,6 +7,9 @@
 #include "util.hpp"
 #include <chrono>
 #include "hooking.hpp"
+#include "invoker.hpp"
+
+#include "natives.hpp"
 
 BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
 {
@@ -39,6 +42,8 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
           g_Hooking = std::make_unique<Hooking>();
           g_Hooking->Hook();
 
+          g_Invoker = std::make_unique<Invoker>();
+
           g_Logger->Info("Loaded WineMenu");
           while (g_Running)
           {
@@ -47,12 +52,10 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
             std::this_thread::sleep_for(std::chrono::milliseconds(3));
             std::this_thread::yield();
           }
-          // std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
           g_Hooking->Unhook();
 
-          // std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
+          g_Invoker.reset();
           g_Hooking.reset();
           g_GameVariables.reset();
           g_GameFunctions.reset();
