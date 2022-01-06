@@ -6,10 +6,7 @@
 #include "game.hpp"
 #include "util.hpp"
 #include <chrono>
-
-#include "memory.hpp"
-#include "offsets.hpp"
-#include "scriptglobal.hpp"
+#include "hooking.hpp"
 
 BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
 {
@@ -30,14 +27,19 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
           title.append(g_GameVariables->m_GameBuild);
           g_Logger->SetTitle(title.c_str());
 
+          bool wasGtaLoaded = true;
           while (*g_GameVariables->m_GameState != 0)
           {
+            wasGtaLoaded = false;
             std::this_thread::sleep_for(std::chrono::seconds(2));
             std::this_thread::yield();
-
           }
-          g_Logger->Info("Loaded GTA");
+          if(!wasGtaLoaded) g_Logger->Info("Loaded GTA");
 
+          g_Hooking = std::make_unique<Hooking>();
+          g_Hooking->Hook();
+
+          g_Logger->Info("Loaded WineMenu");
           while (g_Running)
           {
             if (IsKeyPressed(VK_DELETE))
@@ -45,7 +47,13 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
             std::this_thread::sleep_for(std::chrono::milliseconds(3));
             std::this_thread::yield();
           }
+          // std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
+          g_Hooking->Unhook();
+
+          // std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+          g_Hooking.reset();
           g_GameVariables.reset();
           g_GameFunctions.reset();
 

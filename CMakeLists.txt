@@ -8,4 +8,6 @@ add_library(WineMenu SHARED
   src/main.cpp
   src/logger.cpp
   src/game.cpp
+  src/hooking.cpp
 )
+target_link_libraries(WineMenu ../lib/minhook)
