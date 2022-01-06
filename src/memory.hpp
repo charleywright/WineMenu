@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include <string>
+#include "logger.hpp"
 
 namespace Wine
 {
@@ -237,8 +239,9 @@ namespace Wine
 		 * \brief Constructs the signature with an IDA pattern
 		 * \param pattern The IDA pattern string
 		 */
-		explicit Signature(const char *pattern)
+		explicit Signature(const char *pattern, std::string name = "")
 		{
+			m_Name = name;
 			auto toUpper = [](char c) -> char
 			{
 				return c >= 'a' && c <= 'z' ? static_cast<char>(c + ('A' - 'a')) : static_cast<char>(c);
@@ -313,6 +316,7 @@ namespace Wine
 			{
 				if (compareMemory(reinterpret_cast<std::uint8_t *>(i), m_Elements.data(), m_Elements.size()))
 				{
+					g_Logger->Info("Found %s", m_Name.c_str());
 					return MemoryHandle(i);
 				}
 			}
@@ -322,5 +326,6 @@ namespace Wine
 
 	private:
 		std::vector<Element> m_Elements;
+		std::string m_Name;
 	};
 }
