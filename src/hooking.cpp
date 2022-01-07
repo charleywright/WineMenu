@@ -32,18 +32,52 @@ namespace Wine
 		return result;
 	}
 
+	HRESULT Hooks::Present(IDXGISwapChain* dis, UINT syncInterval, UINT flags)
+	{
+		// if (g_Running)
+		// {
+		// 	g_D3DRenderer->BeginFrame();
+		// 	g_ScriptManager->OnD3DTick();
+		// 	g_D3DRenderer->EndFrame();
+		// }
+
+		return g_Hooking->m_D3DHook.GetOriginal<decltype(&Present)>(PresentIndex)(dis, syncInterval, flags);
+	}
+
+	HRESULT Hooks::ResizeBuffers(IDXGISwapChain* dis, UINT bufferCount, UINT width, UINT height, DXGI_FORMAT newFormat, UINT swapChainFlags)
+	{
+		// if (g_Running)
+		// {
+		// 	g_D3DRenderer->PreResize();
+		// 	auto hr = g_Hooking->m_D3DHook.GetOriginal<decltype(&ResizeBuffers)>(ResizeBuffersIndex)(dis, bufferCount, width, height, newFormat, swapChainFlags);
+		// 	if (SUCCEEDED(hr))
+		// 	{
+		// 		g_D3DRenderer->PostResize();
+		// 	}
+		//
+		// 	return hr;
+		// }
+
+		return g_Hooking->m_D3DHook.GetOriginal<decltype(&ResizeBuffers)>(ResizeBuffersIndex)(dis, bufferCount, width, height, newFormat, swapChainFlags);
+	}
+
+
 	LRESULT Hooks::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 		return static_cast<decltype(&WndProc)>(g_Hooking->m_OriginalWndProc)(hWnd, msg, wParam, lParam);
 	}
 
-	Hooking::Hooking()
+	Hooking::Hooking():
+		m_D3DHook(g_GameVariables->m_Swapchain, 18)
 	{
 		MH_Initialize();
 		MH_CreateHook(g_GameFunctions->m_IsDlcPresent, &Hooks::IsDlcPresent, &m_OriginalIsDlcPresent);
 		MH_CreateHook(g_GameFunctions->m_GetLabelText, &Hooks::GetLabelText, &m_OriginalGetLabelText);
 		MH_CreateHook(g_GameFunctions->m_GetEventData, &Hooks::GetEventData, &m_OriginalGetEventData);
 		MH_CreateHook(g_GameFunctions->m_WndProc, &Hooks::WndProc, &m_OriginalWndProc);
+
+		m_D3DHook.Hook(&Hooks::Present, Hooks::PresentIndex);
+		m_D3DHook.Hook(&Hooks::ResizeBuffers, Hooks::ResizeBuffersIndex);
 	}
 
 	Hooking::~Hooking() noexcept
@@ -57,11 +91,13 @@ namespace Wine
 
 	void Hooking::Hook()
 	{
+		m_D3DHook.Enable();
 		MH_EnableHook(MH_ALL_HOOKS);
 	}
 
 	void Hooking::Unhook()
 	{
+		m_D3DHook.Disable();
 		MH_DisableHook(MH_ALL_HOOKS);
 	}
 }
