@@ -8,8 +8,7 @@
 #include <chrono>
 #include "hooking.hpp"
 #include "invoker.hpp"
-
-#include "natives.hpp"
+#include "ui/d3dRenderer.hpp"
 
 BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
 {
@@ -43,6 +42,7 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
           g_Hooking->Hook();
 
           g_Invoker = std::make_unique<Invoker>();
+          // g_D3DRenderer = std::make_unique<D3DRenderer>();
 
           g_Logger->Info("Loaded WineMenu");
           while (g_Running)
@@ -53,8 +53,10 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
             std::this_thread::yield();
           }
 
+
           g_Hooking->Unhook();
 
+          // g_D3DRenderer.reset();
           g_Invoker.reset();
           g_Hooking.reset();
           g_GameVariables.reset();
