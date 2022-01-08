@@ -9,6 +9,14 @@ add_library(WineMenu SHARED
   src/logger.cpp
   src/game.cpp
   src/hooking.cpp
+  
   src/ui/d3dRenderer.cpp
+  
+  src/ui/ImGui/imgui_demo.cpp
+  src/ui/ImGui/imgui_draw.cpp
+  src/ui/ImGui/imgui_impl_dx11.cpp
+  src/ui/ImGui/imgui_impl_win32.cpp
+  src/ui/ImGui/imgui_widgets.cpp
+  src/ui/ImGui/imgui.cpp
 )
-target_link_libraries(WineMenu ../lib/minhook)
+target_link_libraries(WineMenu ../lib/minhook d3dcompiler)

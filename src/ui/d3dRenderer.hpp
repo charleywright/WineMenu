@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include <dxgi.h>
-// #include <d3d11.h>
+#include <d3d11.h>
 
 namespace Wine
 {
@@ -41,8 +41,8 @@ namespace Wine
 		void WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	private:
 		IDXGISwapChain* m_Swapchain{};
-		// ID3D11Device* m_Device{};
-		// ID3D11DeviceContext* m_Context{};
+		ID3D11Device* m_Device{};
+		ID3D11DeviceContext* m_Context{};
 	};
 
 	inline std::unique_ptr<D3DRenderer> g_D3DRenderer;
