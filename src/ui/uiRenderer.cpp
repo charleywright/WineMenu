@@ -3,34 +3,31 @@
 #include "game.hpp"
 #include "natives.hpp"
 #include "logger.hpp"
+#include "timer.hpp"
+#include <chrono>
 #include <winuser.h>
+
+using namespace std::chrono_literals;
 
 namespace Wine
 {
   namespace
   {
-    uint32_t openTicker = 0;
-    uint32_t logTicker = 0;
+    Timer openTimer = Timer(100ms);
+    Timer logTimer = Timer(100ms);
   }
 
   void UIRenderer::HandleInput()
   {
-    bool openKeyPressed = IsKeyPressed(VK_INSERT);
-    if (openKeyPressed && *g_GameVariables->m_FrameCount - openTicker >= m_OpenDelay)
+    if (IsKeyPressed(VK_INSERT) && openTimer.Update())
     {
-      openTicker = *g_GameVariables->m_FrameCount;
       m_Opened ^= true;
-
       if (m_Sounds)
         AUDIO::PLAY_SOUND_FRONTEND(-1, m_Opened ? "SELECT" : "BACK", "HUD_FRONTEND_DEFAULT_SOUNDSET", false);
     }
 
-    bool logKeyPressed = IsKeyPressed(VK_END);
-    if (logKeyPressed && *g_GameVariables->m_FrameCount - logTicker >= m_OpenDelay)
-    {
-      logTicker = *g_GameVariables->m_FrameCount;
+    if (IsKeyPressed(VK_END) && logTimer.Update())
       g_Logger->ShowConsole(!g_Logger->ShowConsole());
-    }
   };
 
   void UIRenderer::RenderGTA()

@@ -13,6 +13,7 @@
 
 BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
 {
+  using namespace std::chrono_literals;
   using namespace Wine;
 
   if (reason == DLL_PROCESS_ATTACH)
@@ -35,7 +36,7 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
           while (*g_GameVariables->m_GameState != 0)
           {
             wasGtaLoaded = false;
-            std::this_thread::sleep_for(std::chrono::seconds(2));
+            std::this_thread::sleep_for(2s);
             std::this_thread::yield();
           }
           if (!wasGtaLoaded)
@@ -54,7 +55,7 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
           {
             if (IsKeyPressed(VK_DELETE))
               g_Running = false;
-            std::this_thread::sleep_for(std::chrono::milliseconds(3));
+            std::this_thread::sleep_for(3ms);
             std::this_thread::yield();
           }
 
