@@ -7,6 +7,8 @@
 #include <chrono>
 #include <winuser.h>
 
+#include "gta.hpp"
+
 using namespace std::chrono_literals;
 
 namespace Wine
@@ -15,6 +17,7 @@ namespace Wine
   {
     Timer openTimer = Timer(100ms);
     Timer logTimer = Timer(100ms);
+    Timer featureTimer = Timer(100ms);
   }
 
   void UIRenderer::HandleInput()
@@ -28,6 +31,11 @@ namespace Wine
 
     if (IsKeyPressed(VK_END) && logTimer.Update())
       g_Logger->ShowConsole(!g_Logger->ShowConsole());
+
+    if (IsKeyPressed(VK_F4) && featureTimer.Update())
+    {
+      UI::GTA::ShowSubtitle("Amazing notification");
+    }
   };
 
   void UIRenderer::RenderGTA()

@@ -41,19 +41,25 @@ namespace Wine
 	{
 	public:
 		NativeVector3() = default;
-		NativeVector3(float x, float y, float z):
-			x(x), y(y), z(z)
-		{}
+		NativeVector3(float x, float y, float z) : x(x), y(y), z(z)
+		{
+		}
+
 	public:
 		float x{};
+
 	private:
 		char paddingX[4];
+
 	public:
 		float y{};
+
 	private:
 		char paddingY[4];
+
 	public:
 		float z{};
+
 	private:
 		char paddingZ[4];
 	};
@@ -71,10 +77,40 @@ namespace Wine
 #pragma pack(push, 1)
 	struct Color
 	{
-		std::uint8_t r{ 255 };
-		std::uint8_t g{ 255 };
-		std::uint8_t b{ 255 };
-		std::uint8_t a{ 255 };
+		std::uint8_t r{255};
+		std::uint8_t g{255};
+		std::uint8_t b{255};
+		std::uint8_t a{255};
 	};
 #pragma pack(pop)
+
+	enum class Font : std::int32_t
+	{
+		ChaletLondon = 0,
+		HouseScript = 1,
+		Monospace = 2,
+		Wingdings = 3,
+		ChaletComprimeCologne = 4,
+		Pricedown = 7
+	};
+
+	// Used with ~TextModifier~ eg ~TextModifier::Green~Hello World produces "Hello World" in green
+	// More here https://pastebin.com/nqNYWMSB
+	enum class TextModifier : char
+	{
+		Red = 'r',
+		Blue = 'b',
+		Green = 'g',
+		Yellow = 'y',
+		Purple = 'p',
+		Pink = 'q',
+		Orange = 'o',
+		Grey = 'c',
+		DarkerGrey = 'm',
+		Black = 'u', // or ~l~
+		NewLine = 'n',
+		DefaultWhite = 's',
+		White = 'w',
+		Bold = 'h'
+	};
 }

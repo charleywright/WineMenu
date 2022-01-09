@@ -8,6 +8,7 @@
 #include <chrono>
 #include "hooking.hpp"
 #include "invoker.hpp"
+#include "natives.hpp"
 #include "ui/d3dRenderer.hpp"
 #include "ui/uiRenderer.hpp"
 
@@ -55,6 +56,7 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
           {
             if (IsKeyPressed(VK_DELETE))
               g_Running = false;
+
             std::this_thread::sleep_for(3ms);
             std::this_thread::yield();
           }

@@ -12,6 +12,7 @@ add_library(WineMenu SHARED
   
   src/ui/d3dRenderer.cpp
   src/ui/uiRenderer.cpp
+  src/ui/gta.cpp
   
   include/ImGui/imgui_demo.cpp
   include/ImGui/imgui_draw.cpp
