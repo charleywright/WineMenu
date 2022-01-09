@@ -33,7 +33,13 @@ namespace Wine
   void UIRenderer::RenderGTA()
   {
     if (m_Opened && m_MouseLocked)
-      PAD::DISABLE_ALL_CONTROL_ACTIONS(0);
+    {
+      // There are others, also this doesn't account for remapped controls, but it's for debugging so ¯\_(ツ)_/¯
+      PAD::DISABLE_CONTROL_ACTION(0, 1, true);
+      PAD::DISABLE_CONTROL_ACTION(0, 2, true);
+      PAD::DISABLE_CONTROL_ACTION(0, 4, true);
+      PAD::DISABLE_CONTROL_ACTION(0, 6, true);
+    }
   }
 
   void UIRenderer::RenderD3D()
