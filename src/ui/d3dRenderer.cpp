@@ -29,41 +29,30 @@ namespace Wine
 
 	void D3DRenderer::BeginFrame()
 	{
-		// if (g_UiManager->m_Opened && g_Settings.m_LockMouse)
-		// {
-		// 	ImGui::GetIO().MouseDrawCursor = true;
-		// 	ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
-		// }
-		// else
-		// {
-		// 	ImGui::GetIO().MouseDrawCursor = false;
-		// 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse;
-		// }
-
-		ImGui_ImplDX11_NewFrame();
-		ImGui_ImplWin32_NewFrame();
-		ImGui::NewFrame();
+		// ImGui_ImplDX11_NewFrame();
+		// ImGui_ImplWin32_NewFrame();
+		// ImGui::NewFrame();
 	}
 
 	void D3DRenderer::EndFrame()
 	{
-		ImGui::Render();
-		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+		// ImGui::Render();
+		// ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	}
 
 	void D3DRenderer::PreResize()
 	{
-		ImGui_ImplDX11_InvalidateDeviceObjects();
+		// ImGui_ImplDX11_InvalidateDeviceObjects();
 	}
 
 	void D3DRenderer::PostResize()
 	{
-		ImGui_ImplDX11_CreateDeviceObjects();
+		// ImGui_ImplDX11_CreateDeviceObjects();
 	}
 
 	void D3DRenderer::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
-		if (ImGui::GetCurrentContext())
-			ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam);
+		// if (ImGui::GetCurrentContext())
+		// 	ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam);
 	}
 }

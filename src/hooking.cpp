@@ -3,6 +3,7 @@
 #include "logger.hpp"
 #include <inttypes.h>
 #include <MinHook.h>
+#include "ui/d3dRenderer.hpp"
 
 namespace Wine
 {
@@ -11,12 +12,12 @@ namespace Wine
 		return static_cast<decltype(&IsDlcPresent)>(g_Hooking->m_OriginalIsDlcPresent)(hash);
 	}
 
-	const char* Hooks::GetLabelText(void* unk, const char* label)
+	const char *Hooks::GetLabelText(void *unk, const char *label)
 	{
 		return static_cast<decltype(&GetLabelText)>(g_Hooking->m_OriginalGetLabelText)(unk, label);
 	}
 
-	bool Hooks::GetEventData(std::int32_t eventGroup, std::int32_t eventIndex, std::int64_t* args, std::uint32_t argCount)
+	bool Hooks::GetEventData(std::int32_t eventGroup, std::int32_t eventIndex, std::int64_t *args, std::uint32_t argCount)
 	{
 		auto result = static_cast<decltype(&GetEventData)>(g_Hooking->m_OriginalGetEventData)(eventGroup, eventIndex, args, argCount);
 
@@ -32,43 +33,41 @@ namespace Wine
 		return result;
 	}
 
-	HRESULT Hooks::Present(IDXGISwapChain* dis, UINT syncInterval, UINT flags)
+	HRESULT Hooks::Present(IDXGISwapChain *dis, UINT syncInterval, UINT flags)
 	{
-		// if (g_Running)
-		// {
-		// 	g_D3DRenderer->BeginFrame();
-		// 	g_ScriptManager->OnD3DTick();
-		// 	g_D3DRenderer->EndFrame();
-		// }
+		if (g_Running)
+		{
+			g_D3DRenderer->BeginFrame();
+			// OnD3DTick();
+			g_D3DRenderer->EndFrame();
+		}
 
 		return g_Hooking->m_D3DHook.GetOriginal<decltype(&Present)>(PresentIndex)(dis, syncInterval, flags);
 	}
 
-	HRESULT Hooks::ResizeBuffers(IDXGISwapChain* dis, UINT bufferCount, UINT width, UINT height, DXGI_FORMAT newFormat, UINT swapChainFlags)
+	HRESULT Hooks::ResizeBuffers(IDXGISwapChain *dis, UINT bufferCount, UINT width, UINT height, DXGI_FORMAT newFormat, UINT swapChainFlags)
 	{
-		// if (g_Running)
-		// {
-		// 	g_D3DRenderer->PreResize();
-		// 	auto hr = g_Hooking->m_D3DHook.GetOriginal<decltype(&ResizeBuffers)>(ResizeBuffersIndex)(dis, bufferCount, width, height, newFormat, swapChainFlags);
-		// 	if (SUCCEEDED(hr))
-		// 	{
-		// 		g_D3DRenderer->PostResize();
-		// 	}
-		//
-		// 	return hr;
-		// }
+		if (g_Running)
+		{
+			g_D3DRenderer->PreResize();
+			auto hr = g_Hooking->m_D3DHook.GetOriginal<decltype(&ResizeBuffers)>(ResizeBuffersIndex)(dis, bufferCount, width, height, newFormat, swapChainFlags);
+			if (SUCCEEDED(hr))
+			{
+				g_D3DRenderer->PostResize();
+			}
+
+			return hr;
+		}
 
 		return g_Hooking->m_D3DHook.GetOriginal<decltype(&ResizeBuffers)>(ResizeBuffersIndex)(dis, bufferCount, width, height, newFormat, swapChainFlags);
 	}
-
 
 	LRESULT Hooks::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 		return static_cast<decltype(&WndProc)>(g_Hooking->m_OriginalWndProc)(hWnd, msg, wParam, lParam);
 	}
 
-	Hooking::Hooking():
-		m_D3DHook(g_GameVariables->m_Swapchain, 18)
+	Hooking::Hooking() : m_D3DHook(g_GameVariables->m_Swapchain, 18)
 	{
 		MH_Initialize();
 		MH_CreateHook(g_GameFunctions->m_IsDlcPresent, &Hooks::IsDlcPresent, &m_OriginalIsDlcPresent);
