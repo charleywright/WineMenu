@@ -9,6 +9,7 @@
 #include "hooking.hpp"
 #include "invoker.hpp"
 #include "ui/d3dRenderer.hpp"
+#include "ui/uiRenderer.hpp"
 
 BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
 {
@@ -20,7 +21,10 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
     CreateThread(
         nullptr, 0, [](LPVOID) -> DWORD
         {
+          g_ModulePath = GetModulePath(g_Module);
+
           g_Logger = std::make_unique<Logger>();
+          g_Logger->RenderConsole(true);
           g_Logger->Info("WineMenu injected.");
 
           g_GameVariables = std::make_unique<GameVariables>();
@@ -39,11 +43,13 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
           if (!wasGtaLoaded)
             g_Logger->Info("Loaded GTA");
 
+          g_D3DRenderer = std::make_unique<D3DRenderer>();
+          g_UIRenderer = std::make_unique<UIRenderer>();
+
           g_Hooking = std::make_unique<Hooking>();
           g_Hooking->Hook();
 
           g_Invoker = std::make_unique<Invoker>();
-          g_D3DRenderer = std::make_unique<D3DRenderer>();
 
           g_Logger->Info("Loaded WineMenu");
           while (g_Running)

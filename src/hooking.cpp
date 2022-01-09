@@ -4,11 +4,24 @@
 #include <inttypes.h>
 #include <MinHook.h>
 #include "ui/d3dRenderer.hpp"
+#include "ui/uiRenderer.hpp"
 
 namespace Wine
 {
+	namespace
+	{
+		std::uint32_t g_HookFrameCount{};
+	}
+
 	bool Hooks::IsDlcPresent(std::uint32_t hash)
 	{
+		if (g_Running && g_HookFrameCount != *g_GameVariables->m_FrameCount)
+		{
+			g_HookFrameCount = *g_GameVariables->m_FrameCount;
+			g_UIRenderer->HandleInput();
+			g_UIRenderer->RenderGTA();
+		}
+
 		return static_cast<decltype(&IsDlcPresent)>(g_Hooking->m_OriginalIsDlcPresent)(hash);
 	}
 
@@ -38,7 +51,7 @@ namespace Wine
 		if (g_Running)
 		{
 			g_D3DRenderer->BeginFrame();
-			// OnD3DTick();
+			g_UIRenderer->RenderD3D();
 			g_D3DRenderer->EndFrame();
 		}
 
@@ -64,6 +77,7 @@ namespace Wine
 
 	LRESULT Hooks::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
+		g_D3DRenderer->WndProc(hWnd, msg, wParam, lParam);
 		return static_cast<decltype(&WndProc)>(g_Hooking->m_OriginalWndProc)(hWnd, msg, wParam, lParam);
 	}
 

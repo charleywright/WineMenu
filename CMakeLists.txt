@@ -11,12 +11,14 @@ add_library(WineMenu SHARED
   src/hooking.cpp
   
   src/ui/d3dRenderer.cpp
+  src/ui/uiRenderer.cpp
   
-  src/ui/ImGui/imgui_demo.cpp
-  src/ui/ImGui/imgui_draw.cpp
-  src/ui/ImGui/imgui_impl_dx11.cpp
-  src/ui/ImGui/imgui_impl_win32.cpp
-  src/ui/ImGui/imgui_widgets.cpp
-  src/ui/ImGui/imgui.cpp
+  include/ImGui/imgui_demo.cpp
+  include/ImGui/imgui_draw.cpp
+  include/ImGui/imgui_impl_dx11.cpp
+  include/ImGui/imgui_impl_win32.cpp
+  include/ImGui/imgui_widgets.cpp
+  include/ImGui/imgui.cpp
 )
-target_link_libraries(WineMenu ../lib/minhook d3dcompiler)
+# target_link_libraries(WineMenu ../lib/minhook d3dcompiler shlwapi)
+target_link_libraries(WineMenu ../lib/minhook kernel32 user32 gdi32 winspool comdlg32 advapi32 shell32 ole32 oleaut32 uuid odbc32 odbccp32 d3dcompiler shlwapi)

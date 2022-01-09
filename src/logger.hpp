@@ -15,17 +15,17 @@ namespace Wine
 		explicit Logger();
 		~Logger() noexcept;
 
-		Logger(Logger const&) = delete;
-		Logger(Logger&&) = delete;
-		Logger& operator=(Logger const&) = delete;
-		Logger& operator=(Logger&&) = delete;
+		Logger(Logger const &) = delete;
+		Logger(Logger &&) = delete;
+		Logger &operator=(Logger const &) = delete;
+		Logger &operator=(Logger &&) = delete;
 
 		/**
 		 * \brief Logs an info message
 		 * \param format The format of the logged text
 		 * \param ... The arguments to format the string
 		 */
-		void Info(const char* format, ...);
+		void Info(const char *format, ...);
 
 		/**
 		 * \brief Logs WineMenu logo
@@ -37,13 +37,24 @@ namespace Wine
 		 * \param format The format of the logged text
 		 * \param ... The arguments to format the string
 		 */
-		void Error(const char* format, ...);
+		void Error(const char *format, ...);
 
 		/**
 		 * \brief Sets the title of the console
 		 * \param title The new title for the console
 		 */
-		void SetTitle(const char* title);
+		void SetTitle(const char *title);
+
+		/**
+		 * \brief Whether to render a console using ImGUI
+		 * \param update Whether to render the console
+		 */
+		void RenderConsole(bool update);
+
+		/**
+		 * \brief Render any logger related UI
+		 */
+		void Render();
 
 		/**
 		 * \brief Logs a message
@@ -51,17 +62,18 @@ namespace Wine
 		 * \param format The format of the logged text
 		 * \param args The arguments to format the string
 		 */
-		void Log(const char* type, const char* format, std::va_list args);
+		void Log(const char *type, const char *format, std::va_list args);
 
-		std::mutex& GetMutex();
-		std::pair<std::unique_ptr<char[]>*, std::size_t> GetMessages();
-		std::istream& GetInput();
+		std::mutex &GetMutex();
+		std::pair<std::unique_ptr<char[]> *, std::size_t> GetMessages();
+		std::istream &GetInput();
+
 	private:
 		std::mutex m_Mutex;
 		std::vector<std::unique_ptr<char[]>> m_Messages;
-
-		// std::filesystem::path m_FilePath;
-		// std::ofstream m_File;
+		bool m_RenderConsole = false;
+		std::filesystem::path m_FilePath;
+		std::ofstream m_File;
 		std::ofstream m_Console;
 		std::ifstream m_Input;
 	};

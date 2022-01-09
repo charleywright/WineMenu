@@ -1,33 +1,35 @@
 #include "logger.hpp"
 #include <windows.h>
+#include "common.hpp"
+#include "ImGui/imgui.h"
+#include "ImGui/imgui_impl_dx11.h"
+#include "ImGui/imgui_impl_win32.h"
 
 namespace Wine
 {
+	namespace
+	{
+		std::size_t s_LastLogCount = 0;
+	}
+
 	Logger::Logger()
 	{
-		// try
-		// {
-		// 	m_FilePath = std::filesystem::path(g_ModulePath);
-		// 	m_FilePath.append("WineMenu");
-		// 	if (!std::filesystem::exists(m_FilePath))
-		// 		std::filesystem::create_directory(m_FilePath);
-		// 	m_FilePath.append("WineMeunu.log");
-		// }
-		// catch (std::filesystem::filesystem_error const&)
-		// {
-		// }
+		m_FilePath = std::filesystem::path(g_ModulePath);
+		m_FilePath.append("WineMenu");
+		if (!std::filesystem::exists(m_FilePath))
+			std::filesystem::create_directory(m_FilePath);
+		m_FilePath.append("WineMenu.log");
 
 		if (!AttachConsole(GetCurrentProcessId()))
 			AllocConsole();
-		SetConsoleTitleW(L"WineMenu");
+		SetConsoleTitleA("WineMenu");
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN);
 		SetConsoleCP(CP_UTF8);
 		SetConsoleOutputCP(CP_UTF8);
 
-
 		m_Console.open("CONOUT$");
 		m_Input.open("CONIN$");
-		// m_File.open(m_FilePath, std::ios_base::out | std::ios_base::app);
+		m_File.open(m_FilePath, std::ios_base::out | std::ios_base::app);
 		Logo();
 	}
 
@@ -36,7 +38,7 @@ namespace Wine
 		FreeConsole();
 	}
 
-	void Logger::Info(const char* format, ...)
+	void Logger::Info(const char *format, ...)
 	{
 		std::va_list args{};
 		va_start(args, format);
@@ -44,7 +46,7 @@ namespace Wine
 		va_end(args);
 	}
 
-	void Logger::Error(const char* format, ...)
+	void Logger::Error(const char *format, ...)
 	{
 		std::va_list args{};
 		va_start(args, format);
@@ -54,12 +56,43 @@ namespace Wine
 		g_Running = false;
 	}
 
-	void Logger::SetTitle(const char* title)
+	void Logger::RenderConsole(bool update)
+	{
+		m_RenderConsole = update;
+	}
+
+	void Logger::Render()
+	{
+		if (m_RenderConsole)
+		{
+			ImGui::SetNextWindowSize(ImVec2(500, 250), ImGuiCond_FirstUseEver);
+			ImGui::SetNextWindowPos(ImVec2(50, 50), ImGuiCond_FirstUseEver);
+			if (ImGui::Begin(" Log"))
+			{
+				std::lock_guard lock(g_Logger->GetMutex());
+				auto msgs = g_Logger->GetMessages();
+
+				for (std::size_t i = 0; i < msgs.second; ++i)
+				{
+					ImGui::TextUnformatted(msgs.first[i].get());
+				}
+
+				if (s_LastLogCount != msgs.second)
+				{
+					s_LastLogCount = msgs.second;
+					ImGui::SetScrollHereY(1.f);
+				}
+			}
+			ImGui::End();
+		}
+	}
+
+	void Logger::SetTitle(const char *title)
 	{
 		SetConsoleTitleA(title);
 	}
 
-	void Logger::Log(const char* type, const char* format, std::va_list args)
+	void Logger::Log(const char *type, const char *format, std::va_list args)
 	{
 		std::lock_guard lock(m_Mutex);
 
@@ -75,7 +108,7 @@ namespace Wine
 		std::uninitialized_fill_n(messageBuffer.get(), messageLength, '\0');
 		std::vsnprintf(messageBuffer.get(), messageLength, format, args);
 
-		// m_File << prefix << messageBuffer.get() << std::endl;
+		m_File << prefix << messageBuffer.get() << std::endl;
 		m_Console << prefix << messageBuffer.get() << std::endl;
 
 		m_Messages.push_back(std::move(messageBuffer));
@@ -93,17 +126,17 @@ namespace Wine
 		m_Console.flush();
 	}
 
-	std::mutex& Logger::GetMutex()
+	std::mutex &Logger::GetMutex()
 	{
 		return m_Mutex;
 	}
 
-	std::pair<std::unique_ptr<char[]>*, std::size_t> Logger::GetMessages()
+	std::pair<std::unique_ptr<char[]> *, std::size_t> Logger::GetMessages()
 	{
 		return std::make_pair(m_Messages.data(), m_Messages.size());
 	}
 
-	std::istream& Logger::GetInput()
+	std::istream &Logger::GetInput()
 	{
 		return m_Input;
 	}
