@@ -20,15 +20,6 @@ namespace Wine
 			std::filesystem::create_directory(m_FilePath);
 		m_FilePath.append("WineMenu.log");
 
-		if (!AttachConsole(GetCurrentProcessId()))
-			AllocConsole();
-		SetConsoleTitleA("WineMenu");
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN);
-		SetConsoleCP(CP_UTF8);
-		SetConsoleOutputCP(CP_UTF8);
-
-		m_Console.open("CONOUT$");
-		m_Input.open("CONIN$");
 		m_File.open(m_FilePath, std::ios_base::out | std::ios_base::app);
 		Logo();
 	}
@@ -56,9 +47,49 @@ namespace Wine
 		g_Running = false;
 	}
 
-	void Logger::RenderConsole(bool update)
+	bool Logger::RenderConsole()
 	{
-		m_RenderConsole = update;
+		return m_RenderConsole;
+	}
+
+	void Logger::RenderConsole(bool render)
+	{
+		m_RenderConsole = render;
+	}
+
+	bool Logger::ShowConsole()
+	{
+		return m_ShowConsole;
+	}
+
+	void Logger::ShowConsole(bool show)
+	{
+		if (!show)
+		{
+			m_Console.clear();
+			m_Console.close();
+			FreeConsole();
+		}
+		else
+		{
+			if (!AttachConsole(GetCurrentProcessId()))
+				AllocConsole();
+			SetConsoleTitleA("WineMenu");
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN);
+			SetConsoleCP(CP_UTF8);
+			SetConsoleOutputCP(CP_UTF8);
+			m_Console.open("CONOUT$");
+
+			std::lock_guard lock(g_Logger->GetMutex());
+			auto msgs = g_Logger->GetMessages();
+			auto pfxs = g_Logger->GetPrefixes();
+
+			g_Logger->Logo();
+			for (std::size_t i = 0; i < msgs.second; ++i)
+				m_Console << pfxs.first[i].get() << msgs.first[i].get() << "\n";
+			m_Console.flush();
+		}
+		m_ShowConsole = show;
 	}
 
 	void Logger::Render()
@@ -99,8 +130,8 @@ namespace Wine
 		auto time = std::time(nullptr);
 		auto tm = std::localtime(&time);
 
-		char prefix[64] = {};
-		std::snprintf(prefix, sizeof(prefix) - 1, "[%02d:%02d:%02d] [%s] ", tm->tm_hour, tm->tm_min, tm->tm_sec, type);
+		auto prefix = std::make_unique<char[]>(64);
+		std::snprintf(prefix.get(), 63, "[%02d:%02d:%02d] [%s] ", tm->tm_hour, tm->tm_min, tm->tm_sec, type);
 
 		std::size_t messageLength = std::vsnprintf(nullptr, 0, format, args) + 1;
 		auto messageBuffer = std::make_unique<char[]>(messageLength);
@@ -108,9 +139,10 @@ namespace Wine
 		std::uninitialized_fill_n(messageBuffer.get(), messageLength, '\0');
 		std::vsnprintf(messageBuffer.get(), messageLength, format, args);
 
-		m_File << prefix << messageBuffer.get() << std::endl;
-		m_Console << prefix << messageBuffer.get() << std::endl;
+		m_File << prefix.get() << messageBuffer.get() << std::endl;
+		m_Console << prefix.get() << messageBuffer.get() << std::endl;
 
+		m_Prefixes.push_back(std::move(prefix));
 		m_Messages.push_back(std::move(messageBuffer));
 	}
 
@@ -136,8 +168,8 @@ namespace Wine
 		return std::make_pair(m_Messages.data(), m_Messages.size());
 	}
 
-	std::istream &Logger::GetInput()
+	std::pair<std::unique_ptr<char[]> *, std::size_t> Logger::GetPrefixes()
 	{
-		return m_Input;
+		return std::make_pair(m_Prefixes.data(), m_Prefixes.size());
 	}
 }

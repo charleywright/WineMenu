@@ -46,10 +46,26 @@ namespace Wine
 		void SetTitle(const char *title);
 
 		/**
-		 * \brief Whether to render a console using ImGUI
-		 * \param update Whether to render the console
+		 * \brief Whether a console using ImGUI is showing
 		 */
-		void RenderConsole(bool update);
+		bool RenderConsole();
+
+		/**
+		 * \brief Whether to render a console using ImGUI
+		 * \param render Whether to render the console
+		 */
+		void RenderConsole(bool render);
+
+		/**
+		 * \brief Whether a debug console is showing using AllocConsole
+		 */
+		bool ShowConsole();
+
+		/**
+		 * \brief Whether to show a debug console using AllocConsole
+		 * \param show Whether to show the console
+		 */
+		void ShowConsole(bool show);
 
 		/**
 		 * \brief Render any logger related UI
@@ -66,16 +82,17 @@ namespace Wine
 
 		std::mutex &GetMutex();
 		std::pair<std::unique_ptr<char[]> *, std::size_t> GetMessages();
-		std::istream &GetInput();
+		std::pair<std::unique_ptr<char[]> *, std::size_t> GetPrefixes();
 
 	private:
 		std::mutex m_Mutex;
 		std::vector<std::unique_ptr<char[]>> m_Messages;
+		std::vector<std::unique_ptr<char[]>> m_Prefixes;
 		bool m_RenderConsole = false;
+		bool m_ShowConsole = false;
 		std::filesystem::path m_FilePath;
 		std::ofstream m_File;
 		std::ofstream m_Console;
-		std::ifstream m_Input;
 	};
 
 	inline std::unique_ptr<Logger> g_Logger;

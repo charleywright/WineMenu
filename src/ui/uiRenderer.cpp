@@ -10,6 +10,7 @@ namespace Wine
   namespace
   {
     uint32_t openTicker = 0;
+    uint32_t logTicker = 0;
   }
 
   void UIRenderer::HandleInput()
@@ -22,6 +23,13 @@ namespace Wine
 
       if (m_Sounds)
         AUDIO::PLAY_SOUND_FRONTEND(-1, m_Opened ? "SELECT" : "BACK", "HUD_FRONTEND_DEFAULT_SOUNDSET", false);
+    }
+
+    bool logKeyPressed = IsKeyPressed(VK_END);
+    if (logKeyPressed && *g_GameVariables->m_FrameCount - logTicker >= m_OpenDelay)
+    {
+      logTicker = *g_GameVariables->m_FrameCount;
+      g_Logger->ShowConsole(!g_Logger->ShowConsole());
     }
   };
 

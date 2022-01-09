@@ -25,13 +25,11 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
 
           g_Logger = std::make_unique<Logger>();
           g_Logger->RenderConsole(true);
+          g_Logger->ShowConsole(true);
           g_Logger->Info("WineMenu injected.");
 
           g_GameVariables = std::make_unique<GameVariables>();
           g_GameFunctions = std::make_unique<GameFunctions>();
-          std::string title = "WineMenu - GTA ";
-          title.append(g_GameVariables->m_GameBuild);
-          g_Logger->SetTitle(title.c_str());
 
           bool wasGtaLoaded = true;
           while (*g_GameVariables->m_GameState != 0)
