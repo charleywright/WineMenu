@@ -49,4 +49,51 @@ namespace Wine::UI
       GRAPHICS::REQUEST_STREAMED_TEXTURE_DICT(dict.c_str(), false);
     }
   }
+
+  void GTA::DrawRect(float x, float y, float width, float height, Color color)
+  {
+    GRAPHICS::DRAW_RECT(x, y, width, height, color.r, color.g, color.b, color.a, 0);
+  }
+
+  void GTA::DrawLeftText(std::string text, float x, float y, float size, Font font, Color color, bool outline, bool shadow)
+  {
+    HUD::SET_TEXT_SCALE(size, size);
+    HUD::SET_TEXT_FONT(static_cast<int>(font));
+    HUD::SET_TEXT_COLOUR(color.r, color.g, color.b, color.a);
+    if (outline)
+      HUD::SET_TEXT_OUTLINE();
+    if (shadow)
+      HUD::SET_TEXT_DROP_SHADOW();
+
+    HUD::BEGIN_TEXT_COMMAND_DISPLAY_TEXT("STRING");
+    HUD::ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(text.c_str());
+    HUD::END_TEXT_COMMAND_DISPLAY_TEXT(x, y, 0);
+  }
+
+  void GTA::DrawCenteredText(std::string text, float x, float y, float size, Font font, Color color, bool outline, bool shadow)
+  {
+    HUD::SET_TEXT_CENTRE(true);
+    DrawLeftText(text.c_str(), x, y, size, font, color, outline, shadow);
+  }
+
+  void GTA::DrawRightText(std::string text, float x, float y, float size, Font font, Color color, bool outline, bool shadow)
+  {
+    HUD::SET_TEXT_WRAP(0.f, x);
+    HUD::SET_TEXT_RIGHT_JUSTIFY(true);
+    DrawLeftText(text.c_str(), x, y, size, font, color, outline, shadow);
+  }
+
+  float GTA::GetTextHeight(Font font, float size)
+  {
+    return HUD::GET_RENDERED_CHARACTER_HEIGHT(size, static_cast<int>(font));
+  }
+
+  Vector2 GTA::GetSpriteScale(float size)
+  {
+    int x;
+    int y;
+    GRAPHICS::_GET_ACTIVE_SCREEN_RESOLUTION(&x, &y);
+
+    return {(static_cast<float>(y) / static_cast<float>(x)) * size, size};
+  }
 }
