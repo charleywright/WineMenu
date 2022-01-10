@@ -1,5 +1,6 @@
 #include "gta.hpp"
 #include "natives.hpp"
+#include "memory.hpp"
 
 namespace Wine::UI
 {
@@ -15,5 +16,37 @@ namespace Wine::UI
     HUD::BEGIN_TEXT_COMMAND_PRINT("STRING");
     HUD::ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(message.c_str());
     HUD::END_TEXT_COMMAND_PRINT(duration, true);
+  }
+
+  bool GTA::LoadTexture(std::filesystem::path path)
+  {
+    if (!std::filesystem::exists(path))
+      return false;
+
+    static std::uint32_t *(*FileRegister)(int *, const char *, bool, const char *, bool) = Signature("48 89 5C 24 ? 48 89 6C 24 ? 48 89 7C 24 ? 41 54 41 56 41 57 48 83 EC 50 48 8B EA 4C 8B FA 48 8B D9 4D 85 C9", "RegisterTexture").Scan().As<decltype(FileRegister)>();
+    int textureID;
+    FileRegister(&textureID, path.generic_string().c_str(), true, path.filename().generic_string().c_str(), false);
+    if (textureID == -1)
+    {
+      g_Logger->Error("Failed to register %s", path.c_str());
+      return false;
+    }
+    else
+    {
+      g_Logger->Info("Loaded texture %s", path.filename().generic_string().c_str());
+      return true;
+    }
+  }
+
+  void GTA::DrawSprite(std::string dict, std::string texture, float x, float y, float width, float height, Color color, float rotation)
+  {
+    if (GRAPHICS::HAS_STREAMED_TEXTURE_DICT_LOADED(dict.c_str()))
+    {
+      GRAPHICS::DRAW_SPRITE(dict.c_str(), texture.c_str(), x, y, width, height, rotation, color.r, color.g, color.b, color.a, 0);
+    }
+    else
+    {
+      GRAPHICS::REQUEST_STREAMED_TEXTURE_DICT(dict.c_str(), false);
+    }
   }
 }

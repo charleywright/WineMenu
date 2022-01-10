@@ -34,7 +34,7 @@ namespace Wine
 
     if (IsKeyPressed(VK_F4) && featureTimer.Update())
     {
-      UI::GTA::ShowSubtitle("Amazing notification");
+      g_Logger->Info("Feature key pressed");
     }
   };
 

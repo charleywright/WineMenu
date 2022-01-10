@@ -12,6 +12,8 @@
 #include "ui/d3dRenderer.hpp"
 #include "ui/uiRenderer.hpp"
 
+#include "ui/gta.hpp"
+
 BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
 {
   using namespace std::chrono_literals;
