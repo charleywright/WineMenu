@@ -21,5 +21,4 @@ add_library(WineMenu SHARED
   include/ImGui/imgui_widgets.cpp
   include/ImGui/imgui.cpp
 )
-# target_link_libraries(WineMenu ../lib/minhook d3dcompiler shlwapi)
-target_link_libraries(WineMenu ../lib/minhook kernel32 user32 gdi32 winspool comdlg32 advapi32 shell32 ole32 oleaut32 uuid odbc32 odbccp32 d3dcompiler shlwapi)
+target_link_libraries(WineMenu ../lib/minhook d3dcompiler shlwapi)
