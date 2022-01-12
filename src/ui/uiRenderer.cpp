@@ -1,13 +1,11 @@
 #include "uiRenderer.hpp"
-#include "util.hpp"
+#include "common.hpp"
 #include "game.hpp"
 #include "natives.hpp"
 #include "logger.hpp"
 #include "timer.hpp"
 #include <chrono>
 #include <winuser.h>
-
-#include "gta.hpp"
 
 using namespace std::chrono_literals;
 
@@ -17,7 +15,6 @@ namespace Wine
   {
     Timer openTimer = Timer(100ms);
     Timer logTimer = Timer(100ms);
-    Timer featureTimer = Timer(100ms);
   }
 
   void UIRenderer::HandleInput()
@@ -31,11 +28,6 @@ namespace Wine
 
     if (IsKeyPressed(VK_END) && logTimer.Update())
       g_Logger->ShowConsole(!g_Logger->ShowConsole());
-
-    if (IsKeyPressed(VK_F4) && featureTimer.Update())
-    {
-      g_Logger->Info("Feature key pressed");
-    }
   };
 
   void UIRenderer::RenderGTA()

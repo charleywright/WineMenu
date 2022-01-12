@@ -14,8 +14,20 @@ namespace Wine
     UIRenderer &operator=(UIRenderer const &) = delete;
     UIRenderer &operator=(UIRenderer &&) = delete;
 
+    /**
+     * @brief Handles input event for hotkeys
+     */
     void HandleInput();
+
+    /**
+     * @brief Renders any native UI
+     */
     void RenderGTA();
+
+    /**
+     * @brief Renders any DirectX UI
+     * 
+     */
     void RenderD3D();
 
     bool m_Opened = false;

@@ -5,6 +5,13 @@
 
 namespace Wine
 {
+	/**
+	 * @brief Dereferences a multi level pointer
+	 * 
+	 * @param ptr The pointer to dereference
+	 * @param offsets A vector of offsets
+	 * @return The final pointer
+	 */
 	inline uintptr_t DereferenceMultiLevel(std::uint32_t *ptr, std::vector<unsigned int> offsets)
 	{
 		uintptr_t addr = (uintptr_t)ptr;
@@ -120,7 +127,7 @@ namespace Wine
 		 * \param size The size of the region
 		 */
 		constexpr explicit MemoryRegion(MemoryHandle base, std::size_t size) : m_Base(base),
-																			   m_Size(size)
+																																					 m_Size(size)
 		{
 		}
 

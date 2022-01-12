@@ -4,15 +4,12 @@
 #include "logger.hpp"
 #include <memory>
 #include "game.hpp"
-#include "util.hpp"
 #include <chrono>
 #include "hooking.hpp"
 #include "invoker.hpp"
 #include "natives.hpp"
 #include "ui/d3dRenderer.hpp"
 #include "ui/uiRenderer.hpp"
-
-#include "ui/gta.hpp"
 
 BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
 {
@@ -29,7 +26,6 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
 
           g_Logger = std::make_unique<Logger>();
           g_Logger->RenderConsole(true);
-          g_Logger->ShowConsole(true);
           g_Logger->Info("WineMenu injected.");
 
           g_GameVariables = std::make_unique<GameVariables>();

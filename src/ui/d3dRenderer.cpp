@@ -20,6 +20,9 @@ namespace Wine
 		ImGui_ImplDX11_Init(m_Device, m_Context);
 		ImGui_ImplWin32_Init(g_GameVariables->m_GameWindow);
 
+		/* 
+				Default BigBase styles, looks better than default and I cbf making my own
+		*/
 		auto &&style = ImGui::GetStyle();
 		style.Alpha = 0.95f;												 // Global alpha applies to everything in ImGui
 		style.WindowPadding = ImVec2(10, 10);				 // Padding within a window

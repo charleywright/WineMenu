@@ -10,6 +10,12 @@ namespace Wine
     {
     }
 
+    /**
+     * @brief Checks if the delay has passed
+     * 
+     * @return true 
+     * @return false 
+     */
     bool Update()
     {
       auto now = std::chrono::high_resolution_clock::now();
@@ -22,6 +28,11 @@ namespace Wine
       return false;
     }
 
+    /**
+     * @brief Set the timer's delay
+     * 
+     * @param delay The delay to set
+     */
     void SetDelay(std::chrono::milliseconds delay)
     {
       m_Delay = delay;

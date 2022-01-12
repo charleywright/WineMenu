@@ -47,6 +47,7 @@ namespace Wine
 
 		/**
 		 * \brief Whether a console using ImGUI is showing
+		 * \return bool
 		 */
 		bool RenderConsole();
 
@@ -58,6 +59,7 @@ namespace Wine
 
 		/**
 		 * \brief Whether a debug console is showing using AllocConsole
+		 * \return bool
 		 */
 		bool ShowConsole();
 
