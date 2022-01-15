@@ -10,16 +10,20 @@
 namespace Wine
 {
   /**
-   * @brief Checks if a file exists
+   * @brief Get the path to the appdata dir
    * 
-   * @param fileName The absolute path to the file
-   * @return true 
-   * @return false 
+   * @return The absolute path to data dir
    */
-  inline bool FileExists(const std::string &fileName)
+  inline std::filesystem::path GetDataDir()
   {
-    std::filesystem::path p(fileName);
-    return std::filesystem::exists(p);
+    char *appdata;
+    size_t appdata_len;
+    _dupenv_s(&appdata, &appdata_len, "APPDATA");
+    std::filesystem::path dir = appdata;
+    dir /= "C:WineMenu";
+    if (!std::filesystem::exists(dir))
+      std::filesystem::create_directory(dir);
+    return dir;
   }
 
   /**
@@ -28,9 +32,9 @@ namespace Wine
    * @param module The module to get the path of
    * @return The absolute path to the module
    */
-  inline const std::string GetModulePath(HMODULE module)
+  inline std::filesystem::path GetModulePath(HMODULE module)
   {
-    std::string path;
+    std::filesystem::path path;
     char buffer[MAX_PATH];
     GetModuleFileNameA(module, buffer, MAX_PATH);
     PathRemoveFileSpecA(buffer);
@@ -58,5 +62,6 @@ namespace Wine
 
   inline HMODULE g_Module{};
   inline bool g_Running = true;
-  inline std::string g_ModulePath;
+  inline std::filesystem::path g_ModuleDir;
+  inline std::filesystem::path g_DataDir;
 }

@@ -22,7 +22,8 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
     CreateThread(
         nullptr, 0, [](LPVOID) -> DWORD
         {
-          g_ModulePath = GetModulePath(g_Module);
+          g_ModuleDir = GetModulePath(g_Module);
+          g_DataDir = GetDataDir();
 
           g_Logger = std::make_unique<Logger>();
           g_Logger->RenderConsole(true);

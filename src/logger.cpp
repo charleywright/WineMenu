@@ -14,12 +14,8 @@ namespace Wine
 
 	Logger::Logger()
 	{
-		m_FilePath = std::filesystem::path(g_ModulePath);
-		m_FilePath.append("WineMenu");
-		if (!std::filesystem::exists(m_FilePath))
-			std::filesystem::create_directory(m_FilePath);
+		m_FilePath = g_DataDir;
 		m_FilePath.append("WineMenu.log");
-
 		m_File.open(m_FilePath, std::ios_base::out | std::ios_base::app);
 		Logo();
 	}
