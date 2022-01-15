@@ -1,11 +1,10 @@
+#pragma once
 #include "game.hpp"
 #include <windows.h>
 #include <fstream>
 #include <windows.h>
 #include <shlwapi.h>
 #include <filesystem>
-
-#pragma once
 
 namespace Wine
 {
