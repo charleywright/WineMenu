@@ -4,6 +4,7 @@
 #include "natives.hpp"
 #include "logger.hpp"
 #include "timer.hpp"
+#include "config.hpp"
 #include <chrono>
 #include <winuser.h>
 
@@ -22,7 +23,7 @@ namespace Wine
     if (IsKeyPressed(VK_INSERT) && openTimer.Update())
     {
       m_Opened ^= true;
-      if (m_Sounds)
+      if (g_Config->m_Sounds)
         AUDIO::PLAY_SOUND_FRONTEND(-1, m_Opened ? "SELECT" : "BACK", "HUD_FRONTEND_DEFAULT_SOUNDSET", false);
     }
 
@@ -32,7 +33,7 @@ namespace Wine
 
   void UIRenderer::RenderGTA()
   {
-    if (m_Opened && m_MouseLocked)
+    if (m_Opened && g_Config->m_MouseLocked)
     {
       // There are others, also this doesn't account for remapped controls, but it's for debugging so ¯\_(ツ)_/¯
       PAD::DISABLE_CONTROL_ACTION(0, 1, true);

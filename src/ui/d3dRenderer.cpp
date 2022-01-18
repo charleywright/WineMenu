@@ -1,6 +1,7 @@
 #include "d3dRenderer.hpp"
 #include "logger.hpp"
 #include "game.hpp"
+#include "config.hpp"
 #include "uiRenderer.hpp"
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_impl_dx11.h"
@@ -95,7 +96,7 @@ namespace Wine
 
 	void D3DRenderer::BeginFrame()
 	{
-		if (g_UIRenderer->m_Opened && g_UIRenderer->m_MouseLocked)
+		if (g_UIRenderer->m_Opened && g_Config->m_MouseLocked)
 		{
 			ImGui::GetIO().MouseDrawCursor = true;
 			ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;

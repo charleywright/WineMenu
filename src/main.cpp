@@ -6,6 +6,7 @@
 #include "game.hpp"
 #include <chrono>
 #include "hooking.hpp"
+#include "config.hpp"
 #include "invoker.hpp"
 #include "natives.hpp"
 #include "ui/d3dRenderer.hpp"
@@ -26,8 +27,12 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
           g_DataDir = GetDataDir();
 
           g_Logger = std::make_unique<Logger>();
-          g_Logger->RenderConsole(true);
           g_Logger->Info("WineMenu injected.");
+
+          g_Config = std::make_unique<Config>();
+
+          g_Logger->RenderConsole(g_Config->m_RenderConsole);
+          g_Logger->ShowConsole(g_Config->m_ShowConsole);
 
           g_GameVariables = std::make_unique<GameVariables>();
           g_GameFunctions = std::make_unique<GameFunctions>();
@@ -51,6 +56,7 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
           g_Invoker = std::make_unique<Invoker>();
 
           g_Logger->Info("Loaded WineMenu");
+          g_UIRenderer->m_Opened ^= true;
           while (g_Running)
           {
             if (IsKeyPressed(VK_DELETE))
@@ -67,6 +73,8 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
           g_Hooking.reset();
           g_GameVariables.reset();
           g_GameFunctions.reset();
+
+          g_Config.reset();
 
           g_Logger->Info("WineMenu unloaded");
           g_Logger.reset();

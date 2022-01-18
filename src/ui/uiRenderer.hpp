@@ -31,8 +31,6 @@ namespace Wine
     void RenderD3D();
 
     bool m_Opened = false;
-    bool m_Sounds = true;
-    bool m_MouseLocked = true;
 
   private:
     uint32_t m_OpenDelay = 30;
