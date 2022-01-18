@@ -13,6 +13,17 @@ namespace Wine
     Config &operator=(Config const &) = delete;
     Config &operator=(Config &&) = delete;
 
+    /**
+     * @brief Load the last saved state
+     * 
+     */
+    void Load();
+
+    /**
+     * @brief Save the current state
+     */
+    void Save();
+
     bool m_Sounds = true;
     bool m_MouseLocked = true;
     bool m_RenderConsole = true;

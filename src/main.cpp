@@ -30,6 +30,7 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
           g_Logger->Info("WineMenu injected.");
 
           g_Config = std::make_unique<Config>();
+          g_Config->Load();
 
           g_Logger->RenderConsole(g_Config->m_RenderConsole);
           g_Logger->ShowConsole(g_Config->m_ShowConsole);
@@ -74,6 +75,7 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
           g_GameVariables.reset();
           g_GameFunctions.reset();
 
+          g_Config->Save();
           g_Config.reset();
 
           g_Logger->Info("WineMenu unloaded");

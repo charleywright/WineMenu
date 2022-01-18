@@ -9,6 +9,7 @@ add_library(WineMenu SHARED
   src/logger.cpp
   src/game.cpp
   src/hooking.cpp
+  src/config.cpp
   
   src/ui/d3dRenderer.cpp
   src/ui/uiRenderer.cpp
