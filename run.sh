@@ -2,7 +2,8 @@
 
 # Usage: run.sh <target> [rebuild]
 
-INJECTOR_CMD="./Injector/build/Release/WineInjector.exe ./Menu/build/Release/WineMenu.dll GTA5.exe"
+INJECTOR_DELAY=3
+INJECTOR_CMD="./Injector/build/Release/WineInjector.exe ./Menu/build/Release/WineMenu.dll GTA5.exe $INJECTOR_DELAY"
 blue=$(tput setaf 4)
 normal=$(tput sgr0)
 
