@@ -2,6 +2,7 @@
 #include "common.hpp"
 #include <thread>
 #include "logger.hpp"
+#include "translations.hpp"
 #include <memory>
 #include "game.hpp"
 #include <chrono>
@@ -31,6 +32,12 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
 
           g_Config = std::make_unique<Config>();
           g_Config->Load();
+
+          g_Translations = std::make_unique<Translations>();
+          if (g_Translations->Load())
+            g_Logger->Info("Loaded translations");
+          else
+            g_Logger->Error("Failed to load translations");
 
           g_Logger->RenderConsole(g_Config->m_RenderConsole);
           g_Logger->ShowConsole(g_Config->m_ShowConsole);
@@ -74,6 +81,7 @@ BOOL DllMain(HINSTANCE hInstance, DWORD reason, LPVOID)
           g_Hooking.reset();
           g_GameVariables.reset();
           g_GameFunctions.reset();
+          g_Translations.reset();
 
           g_Config->Save();
           g_Config.reset();

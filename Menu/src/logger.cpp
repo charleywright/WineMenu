@@ -39,8 +39,6 @@ namespace Wine
 		va_start(args, format);
 		Log("Error", format, args);
 		va_end(args);
-
-		g_Running = false;
 	}
 
 	bool Logger::RenderConsole()
