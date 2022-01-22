@@ -24,6 +24,7 @@ namespace Wine
       std::filesystem::remove(dir);
     if (!std::filesystem::exists(dir))
       std::filesystem::create_directory(dir);
+    return dir;
   }
 
   /**

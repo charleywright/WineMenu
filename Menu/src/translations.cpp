@@ -2,6 +2,7 @@
 #include "common.hpp"
 #include "json.hpp"
 #include <fstream>
+#include <algorithm>
 #include "logger.hpp"
 
 namespace Wine
@@ -34,9 +35,15 @@ namespace Wine
 
   std::string Translations::Get(std::string key)
   {
-    std::vector<std::pair<std::string, std::string>>::iterator it = std::find_if(m_Translations.begin(), m_Translations.end(),
-                                                                                 [&key](const std::pair<std::string, std::string> &element)
-                                                                                 { return element.first == key; });
+    if (m_Translations.size() == 0)
+      return "NO_TRANSLATION";
+    auto it = std::find_if(m_Translations.begin(), m_Translations.end(),
+                           [&key](const std::pair<std::string, std::string> &element)
+                           { return element.first == key; });
+    if ((*it).first != key)
+      return "NO_TRANSLATION";
+    if ((*it).second.length() == 0)
+      return (*it).first;
     return (*it).second;
   }
 }
