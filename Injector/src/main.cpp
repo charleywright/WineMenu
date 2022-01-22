@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
   if (argc < 3)
   {
     std::filesystem::path p(argv[0]);
-    std::cout << "Usage: " << p.filename().generic_string() << " <Path to DLL> <Window Name> [Delay in seconds]" << std::endl;
+    std::cout << "Usage: " << p.filename().string() << " <Path to DLL> <Window Name> [Delay in seconds]" << std::endl;
     return 1;
   }
 
@@ -93,15 +93,15 @@ int main(int argc, char *argv[])
     temp_filename += rand_char();
   temp_filename += ".dll";
   temp_dll.append(temp_filename);
-  const char *temp_dll_bytes = temp_dll.generic_string().c_str();
+  const char *temp_dll_bytes = temp_dll.string().c_str();
   size_t temp_dll_length = strlen(temp_dll_bytes);
   std::filesystem::copy(dll, temp_dll);
 
   HANDLE proc = OpenProcess(PROCESS_ALL_ACCESS, false, proc_id);
   LPTHREAD_START_ROUTINE lla_addr = (LPTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandleA("kernel32.dll"), "LoadLibraryA");
   std::this_thread::sleep_for(1s);
-  LPVOID filename_ptr = VirtualAllocEx(proc, NULL, temp_dll.generic_string().length(), MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-  WriteProcessMemory(proc, filename_ptr, temp_dll_bytes, temp_dll.generic_string().length(), 0);
+  LPVOID filename_ptr = VirtualAllocEx(proc, NULL, temp_dll.string().length(), MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+  WriteProcessMemory(proc, filename_ptr, temp_dll_bytes, temp_dll.string().length(), 0);
   HANDLE h_thread = CreateRemoteThread(proc, NULL, 0, lla_addr, filename_ptr, 0, NULL);
   WaitForSingleObject(h_thread, INFINITE);
   CloseHandle(h_thread);

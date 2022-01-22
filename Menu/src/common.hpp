@@ -19,10 +19,11 @@ namespace Wine
     size_t appdata_len;
     _dupenv_s(&appdata, &appdata_len, "APPDATA");
     std::filesystem::path dir = appdata;
-    dir /= "C:WineMenu";
+    dir /= "WineMenu";
+    if (std::filesystem::exists(dir) && !std::filesystem::is_directory(dir))
+      std::filesystem::remove(dir);
     if (!std::filesystem::exists(dir))
       std::filesystem::create_directory(dir);
-    return dir;
   }
 
   /**

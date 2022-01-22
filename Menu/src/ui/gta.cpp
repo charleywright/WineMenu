@@ -25,7 +25,7 @@ namespace Wine::UI
 
     static std::uint32_t *(*FileRegister)(int *, const char *, bool, const char *, bool) = Signature("48 89 5C 24 ? 48 89 6C 24 ? 48 89 7C 24 ? 41 54 41 56 41 57 48 83 EC 50 48 8B EA 4C 8B FA 48 8B D9 4D 85 C9", "RegisterTexture").Scan().As<decltype(FileRegister)>();
     int textureID;
-    FileRegister(&textureID, path.generic_string().c_str(), true, path.filename().generic_string().c_str(), false);
+    FileRegister(&textureID, path.string().c_str(), true, path.filename().string().c_str(), false);
     if (textureID == -1)
     {
       g_Logger->Error("Failed to register %s", path.c_str());
@@ -33,7 +33,7 @@ namespace Wine::UI
     }
     else
     {
-      g_Logger->Info("Loaded texture %s", path.filename().generic_string().c_str());
+      g_Logger->Info("Loaded texture %s", path.filename().string().c_str());
       return true;
     }
   }

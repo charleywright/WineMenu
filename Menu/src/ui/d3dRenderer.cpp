@@ -6,6 +6,9 @@
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_impl_dx11.h"
 #include "ImGui/imgui_impl_win32.h"
+#include "common.hpp"
+#include "ImGui/imgui_internal.h"
+#include <filesystem>
 
 IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -17,7 +20,11 @@ namespace Wine
 			g_Logger->Error("Failed to get D3D Device");
 		m_Device->GetImmediateContext(&m_Context);
 
-		ImGui::CreateContext();
+		std::filesystem::path path(g_DataDir);
+		path /= "imgui.ini";
+		ImGuiContext *ctx = ImGui::CreateContext();
+		static std::string iniPath = path.string();
+		ctx->IO.IniFilename = iniPath.c_str();
 		ImGui_ImplDX11_Init(m_Device, m_Context);
 		ImGui_ImplWin32_Init(g_GameVariables->m_GameWindow);
 
