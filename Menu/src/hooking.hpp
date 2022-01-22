@@ -13,6 +13,7 @@ namespace Wine
 		static const char *GetLabelText(void *unk, const char *label);
 		static bool GetEventData(std::int32_t eventGroup, std::int32_t eventIndex, std::int64_t *args, std::uint32_t argCount);
 		static LRESULT WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+		static bool SetCursorPos(int x, int y);
 
 		static constexpr auto PresentIndex = 8;
 		static HRESULT Present(IDXGISwapChain *dis, UINT syncInterval, UINT flags);
@@ -48,6 +49,7 @@ namespace Wine
 		void *m_OriginalGetLabelText{};
 		void *m_OriginalGetEventData{};
 		void *m_OriginalWndProc{};
+		void *m_OriginalSetCursorPos{};
 		VMTHook m_D3DHook;
 	};
 

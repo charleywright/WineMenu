@@ -222,6 +222,17 @@ namespace Wine
 			return m_Base.Add(m_Base.As<IMAGE_DOS_HEADER *>()->e_lfanew).As<IMAGE_NT_HEADERS64 *>();
 		}
 
+		/**
+		 * @brief Get the address of an export
+		 * 
+		 * @param name The name of the export
+		 * @return Address of the export
+		 */
+		MemoryHandle GetExport(std::string name)
+		{
+			return GetProcAddress(m_Base.As<HMODULE>(), name.c_str());
+		}
+
 	private:
 		/**
 		 * \brief Transforms a relative virtual address to a virtual address

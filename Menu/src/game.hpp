@@ -50,6 +50,9 @@ namespace Wine
 
 		using GetLabelText = const char *(void *unk, const char *label);
 		GetLabelText *m_GetLabelText;
+
+		using SetCursorPos = bool(int x, int y);
+		SetCursorPos *m_SetCursorPos;
 	};
 
 	inline std::unique_ptr<GameVariables> g_GameVariables;
